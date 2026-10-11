@@ -121,3 +121,29 @@ CREATE TABLE audit_logs (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE discussions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  course_id INT NOT NULL,
+  user_id INT NOT NULL,
+  title VARCHAR(150) NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_discussions_course_created (course_id, created_at, id),
+  INDEX idx_discussions_user (user_id),
+  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE discussion_replies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  discussion_id INT NOT NULL,
+  user_id INT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_discussion_replies_thread_created (discussion_id, created_at, id),
+  INDEX idx_discussion_replies_user (user_id),
+  FOREIGN KEY (discussion_id) REFERENCES discussions(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
